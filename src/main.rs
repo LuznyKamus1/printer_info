@@ -20,7 +20,7 @@ impl PrinterStatus {
     fn to_string(&self) -> String {
         match self {
             PrinterStatus::Standby => "%{B#111}Standby!".to_string(),
-            PrinterStatus::Printing(progress) => format!("%{{B#0F0}}Printing: {}%", progress),
+            PrinterStatus::Printing(progress) => format!("%{{B#0F0}}Printing: {}", progress),
             PrinterStatus::Error(result) => format!("%{{B#F00}}ERROR!!! : {}", result),
             PrinterStatus::Pause(result_opt) => {
                 match result_opt {
@@ -69,9 +69,10 @@ fn get_status() -> Result<PrinterStatus, ()> {
     
     for state in json["state"]["flags"].as_object().unwrap() {
         let (key, val) = state;
-        if val == true {
+        //dbg!(key, val);
+        if val == true && key != "operational" {
             return match key.as_str() {
-                "operational" | "ready" => Ok(PrinterStatus::Standby),
+                "ready" => Ok(PrinterStatus::Standby),
                 "paused" | "pausing" | "cancelling" => Ok(PrinterStatus::Pause(None)),
                 "printing" => Ok(PrinterStatus::Printing(0)),
                 "error" | "closedOrError" => Ok(PrinterStatus::Error("".to_string())),
