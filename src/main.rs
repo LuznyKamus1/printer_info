@@ -1,5 +1,3 @@
-//TODO: octoeverywhere/klipper connection | proper string formating for lemonbar? | writing to printer info device
-
 use std::{fmt, str};
 use curl::easy::Easy;
 use serde_json::{Value};
